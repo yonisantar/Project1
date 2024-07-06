@@ -8,7 +8,7 @@ pipeline{
         CODE_DIR='movie-land'
         IMAGE_NAME='${FOLDER_NAME}'
         TAG = 'v1.${BUILD_NUMBER}'
-        DOCKERHUB_REPO = 'yit1977ltld/apiproject'     
+        ACCOUNT_NAME= 'yit1977ltld/apiproject'
         REGISTRY= 'hub.docker.com'
         DOCKERHUB_CREDENIALS = credentials('DockerCred')
 
