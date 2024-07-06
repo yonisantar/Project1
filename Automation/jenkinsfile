@@ -36,12 +36,7 @@ pipeline{
                 }
             }
         }
-        stage("Test Image"){   
-            agent { 
-                docker{
-                    image'python:3.9'
-                }
-            }                     
+        stage("Test Image"){            
             steps{
                     sh 'pwd'
                     sh 'whoami'
