@@ -57,7 +57,7 @@ pipeline{
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                     }
                     // Push the Docker image
-                    sh "docker push ${DOCKERHUB_REPO}:${IMAGE_NAME}"
+                    sh "docker push ${DOCKERHUB_REPO}:${IMAGE_NAME}:${TAG}"
 
                     // Also save to a file
                     sh "docker save ${DOCKERHUB_REPO}:${IMAGE_NAME} > ${FOLDER_NAME}.tar"
