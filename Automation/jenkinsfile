@@ -5,8 +5,8 @@ pipeline{
             steps{
                 sh 'pwd'
                 sh 'ls -la'
-                dir('jenkins3') {
-                    sh 'ls -la'
+                dir('api') {
+                    sh 'build -t api-app-image .'
                 }
             }
             post{
