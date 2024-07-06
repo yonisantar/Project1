@@ -7,6 +7,8 @@ pipeline{
                 sh 'ls -la'
                 dir('api') {
                     sh 'docker build -t api-app-image .'
+                    sh 'docker rm -f api-app'
+                    sh 'docker run -d --name api-app -p 5000:5000 api-app-image'
                 }
             }
             post{
