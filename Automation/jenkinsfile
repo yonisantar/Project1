@@ -8,10 +8,10 @@ pipeline{
         CODE_DIR='movie-land'
         IMAGE_NAME='${FOLDER_NAME}'
         TAG = 'v1.${BUILD_NUMBER}'
-        DOCKER_CREDENTIALS_ID = 'DockerCred'
         DOCKERHUB_REPO = 'yit1977ltld/apiproject'     
         REGISTRY= 'hub.docker.com'
-  
+        DOCKERHUB_CREDENIALS = credentials('DockerCred')
+
     }    
     stages{
         stage("build image"){
@@ -51,34 +51,27 @@ pipeline{
             }                
         }
 
-        stage("Push Image"){
+        stage("Login to DockerHub"){
             steps{
-                script {
-                    // Log in to Docker Hub
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                    }
-                    // Push the Docker image
-                    sh "docker push ${DOCKERHUB_REPO}:${IMAGE_NAME}:${TAG}"
+                sh 'echo ${DOCKERHUB_CREDENIALS_USR}'
+                sh "echo ${DOCKERHUB_CREDENIALS_PSW} | docker login -u ${DOCKERHUB_CREDENIALS_USR} --password-stdin "
+            }
+        
+        }
 
-                    // Also save to a file
-                    sh "docker save ${DOCKERHUB_REPO}:${IMAGE_NAME} > ${FOLDER_NAME}.tar"
-                }
-                }
-            post{
-                success{
-                    echo "Image Exported"
-                }
-                failure{
-                    echo "Fail to export Image"
-                }
-            }                
-        }        
+         stage("push image"){
+            steps{
+                sh "docker tag ${IMAGE_NAME}:${TAG} ${ACCOUNT_NAME}:${TAG}"
+                sh "docker images"
+                sh "docker push ${ACCOUNT_NAME}:${TAG}" 
+            }
+        
+        }
     }
     post{
         always{
-            sh 'rm -rf ${CODE_DIR}'
-          //  sh "docker rmi -f ${IMAGE_NAME}:${TAG}"
+            sh 'docker rmi -f $(docker images -qa)'
+            sh 'docker logout' 
         }
         success{
             echo "========pipeline executed successfully ========"
