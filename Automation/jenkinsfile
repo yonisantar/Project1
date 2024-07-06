@@ -1,33 +1,55 @@
 pipeline{
     agent any
+    environment {
+        // env_name = env_value 
+        FOLDER_NAME= 'api'
+        IMAGE_NAME = 'api-app-image'
+        CONTAINER_NAME = 'api-app'
+        EXTERNAL_APP_PORT = '5000'
+        INTERNAL_APP_PORT = '5000'
+        GITHUME_USERNAME='devopsPRO27'
+        CODE_DIR='movie-land'
+        IMAGE_NAME='${FOLDER_NAME}:v1.${BUILD_NUMBER}'
+        BUCKET_NAME='hodi'
+    }    
     stages{
-        stage("build"){
+        stage("build image"){
             steps{
                 sh 'pwd'
                 sh 'ls -la'
                 dir('api') {
-                    sh 'docker build -t api-app-image .'
-                    sh 'docker rm -f api-app'
-                    sh 'docker run -d --name api-app -p 5000:5000 api-app-image'
+                    sh "docker build -t ${IMAGE_NAME} ."        
+                    sh "docker rm -f ${CONTAINER_NAME}"                
+                    //sh "docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}"                    
                 }
             }
             post{
                 always{
+                    // Delete docker file
                     sh "rm -f Dockerfile "
                 }
                 success{
-                    echo "well done"
+                    echo "Api App Build Success"
                 }
                 failure{
-                    echo "ooooops"
+                    echo "oooApi App Build Failure"
                 }
             }
         }
-        stage("test"){
+        stage("Test Image"){
             steps{
-                sh 'docker ps'
+                    sh "docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}"   
+                    sh "sleep 5 && timeout 5 ping localhost -c 4 -p ${EXTERNAL_APP_PORT}"                 
                 }
-            }
+            post{
+                success{
+                    echo "API Container is answering - OK"
+                }
+                failure{
+                    echo "API Container is not answering - Failure"
+                }
+            }                
+        }
     }
     post{
         always{
