@@ -7,7 +7,7 @@ pipeline{
         INTERNAL_APP_PORT = '5000'
         CODE_DIR='movie-land'
         IMAGE_NAME='${FOLDER_NAME}'
-        TAG = 'v1.${BUILD_NUMBER'
+        TAG = 'v1.${BUILD_NUMBER}'
         DOCKER_CREDENTIALS_ID = 'HubId'
         DOCKERHUB_REPO = 'yit1977ltld/apiproject'        
     }    
