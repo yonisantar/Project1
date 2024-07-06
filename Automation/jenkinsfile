@@ -72,7 +72,7 @@ pipeline{
         always{
             sh 'rm -fr ${FOLDER_NAME}'
             sh 'docker rmi -f $(docker images -qa)'
-          //  sh 'docker logout' 
+            sh 'docker logout' 
         }
         success{
             echo "========pipeline executed successfully ========"
