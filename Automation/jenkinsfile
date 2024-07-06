@@ -37,8 +37,8 @@ pipeline{
             }
         }
         stage("Test Image"){
-            agent {
-                docker {
+            agent{
+                docker{
                     image'ubuntu:latest'
                 }
             }            
@@ -48,7 +48,7 @@ pipeline{
                     sh 'uname -m'
                     sh "docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}:${TAG}"   
                     sh "sleep 2 && timeout 5 ping localhost -c 4 -p ${EXTERNAL_APP_PORT}"                 
-                }
+            }
             post{
                 success{
                     echo "API Container is answering - OK"
