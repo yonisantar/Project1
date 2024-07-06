@@ -23,35 +23,15 @@ pipeline{
         
         }
         stage("build"){
-            steps{
-                dir('Docker-exercise-3/ResumeMaker/'){
-                    sh 'docker build -t ${IMAGE_NAME}:${TAG} --file ../../jenkins6/docker_agents/Dockerfile .'
-                    sh 'docker images'
-                }
+                echo "build"
             }
         
         }
         stage("test"){
             
             steps{
-                sh 'git clone '
-                sh 'uname'
-                sh 'uname -m'
-            }
-        
-        }
-        stage("Login to DockerHub"){
-            steps{
-                sh 'echo ${DOCKERHUB_CREDENIALS_USR}'
-                sh "echo ${DOCKERHUB_CREDENIALS_PSW} | docker login -u ${DOCKERHUB_CREDENIALS_USR} --password-stdin "
-            }
-        
-        }
-        stage("push image"){
-            steps{
-                sh "docker tag ${IMAGE_NAME}:${TAG} ${ACCOUNT_NAME}:${TAG}"
-                sh "docker images"
-                sh "docker push ${ACCOUNT_NAME}:${TAG}" 
+                echo "test"
+
             }
         
         }
