@@ -3,14 +3,12 @@ pipeline{
     environment {
         // env_name = env_value 
         FOLDER_NAME= 'api'
-        IMAGE_NAME = 'api-app-image'
         CONTAINER_NAME = 'api-app'
         EXTERNAL_APP_PORT = '5000'
         INTERNAL_APP_PORT = '5000'
         GITHUME_USERNAME='devopsPRO27'
         CODE_DIR='movie-land'
         IMAGE_NAME='${FOLDER_NAME}:v1.${BUILD_NUMBER}'
-        BUCKET_NAME='hodi'
     }    
     stages{
         stage("build image"){
