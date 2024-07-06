@@ -71,7 +71,8 @@ pipeline{
    post{
         always{
             sh 'rm -fr ${FOLDER_NAME}'
-            sh 'docker rmi -f $(docker images -qa)'
+            sh "docker rmi -f ${IMAGE_NAME}:${TAG}"
+            sh "docker rmi -f ${ACCOUNT_NAME}:${TAG}"
             sh 'docker logout' 
         }
         success{
