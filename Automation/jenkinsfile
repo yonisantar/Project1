@@ -8,8 +8,10 @@ pipeline{
         CODE_DIR='movie-land'
         IMAGE_NAME='${FOLDER_NAME}'
         TAG = 'v1.${BUILD_NUMBER}'
-        DOCKER_CREDENTIALS_ID = 'HubId'
-        DOCKERHUB_REPO = 'yit1977ltld/apiproject'        
+        DOCKER_CREDENTIALS_ID = 'DockerCred'
+        DOCKERHUB_REPO = 'yit1977ltld/apiproject'     
+        REGISTRY= 'hub.docker.com'
+  
     }    
     stages{
         stage("build image"){
