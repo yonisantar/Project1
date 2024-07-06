@@ -1,0 +1,72 @@
+pipeline{
+    agent any
+    environment {
+        REPO_URL= 'https://github.com/yonisantar/Project1.git'
+        IMAGE_NAME= 'ApiProject'
+        DIR_NAME='ApiProject'
+        TAG= "V1.${BUILD_NUMBER}"
+        CONTAINER_NAME= 'api-app'
+        REGISTRY= 'hub.docker.com'
+        ACCOUNT_NAME= 'yonisantat/Project1'
+        DOCKERHUB_CREDENIALS = credentials('docker')
+        // DOCKERHUB_CREDENIALS_USR
+        // DOCKERHUB_CREDENIALS_PSW
+
+    }
+    stages{
+        stage("clone"){
+            steps{
+                sh 'git clone ${REPO_URL}'
+                sh 'pwd'
+                sh 'find .'
+            }
+        
+        }
+        stage("build"){
+            steps{
+                dir('Docker-exercise-3/ResumeMaker/'){
+                    sh 'docker build -t ${IMAGE_NAME}:${TAG} --file ../../jenkins6/docker_agents/Dockerfile .'
+                    sh 'docker images'
+                }
+            }
+        
+        }
+        stage("test"){
+            
+            steps{
+                sh 'git clone '
+                sh 'uname'
+                sh 'uname -m'
+            }
+        
+        }
+        stage("Login to DockerHub"){
+            steps{
+                sh 'echo ${DOCKERHUB_CREDENIALS_USR}'
+                sh "echo ${DOCKERHUB_CREDENIALS_PSW} | docker login -u ${DOCKERHUB_CREDENIALS_USR} --password-stdin "
+            }
+        
+        }
+        stage("push image"){
+            steps{
+                sh "docker tag ${IMAGE_NAME}:${TAG} ${ACCOUNT_NAME}:${TAG}"
+                sh "docker images"
+                sh "docker push ${ACCOUNT_NAME}:${TAG}" 
+            }
+        
+        }
+    }
+    post{
+        always{
+            sh 'rm -fr ${DIR_NAME}'
+            sh 'docker rmi -f $(docker images -qa)'
+            sh 'docker logout' 
+        }
+        success{
+            echo "========pipeline executed successfully ========"
+        }
+        failure{
+            echo "========pipeline execution failed========"
+        }
+    }
+}
