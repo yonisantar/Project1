@@ -1,46 +1,35 @@
 pipeline{
     agent any
-    environment {
-        REPO_URL= 'https://github.com/yonisantar/Project1.git'
-        IMAGE_NAME= 'ApiProject'
-        DIR_NAME='ApiProject'
-        TAG= "V1.${BUILD_NUMBER}"
-        CONTAINER_NAME= 'api-app'
-        REGISTRY= 'hub.docker.com'
-        ACCOUNT_NAME= 'yonisantat/Project1'
-        DOCKERHUB_CREDENIALS = credentials('docker')
-        // DOCKERHUB_CREDENIALS_USR
-        // DOCKERHUB_CREDENIALS_PSW
-
-    }
     stages{
-        stage("clone"){
-            steps{
-                sh 'git clone ${REPO_URL}'
-                sh 'pwd'
-                sh 'find .'
-            }
-        
-        }
         stage("build"){
-                echo "build"
+            steps{
+                sh 'pwd'
+                sh 'ls -la'
+                dir('jenkins3') {
+                    sh 'ls -la'
+                }
             }
-        
+            post{
+                always{
+                    sh "rm -f Dockerfile "
+                }
+                success{
+                    echo "well done"
+                }
+                failure{
+                    echo "ooooops"
+                }
+            }
         }
         stage("test"){
-            
             steps{
-                echo "test"
-
+                sh 'docker ps'
+                }
             }
-        
-        }
     }
     post{
         always{
-            sh 'rm -fr ${DIR_NAME}'
-            sh 'docker rmi -f $(docker images -qa)'
-            sh 'docker logout' 
+            sh 'echo hello'
         }
         success{
             echo "========pipeline executed successfully ========"
@@ -49,3 +38,4 @@ pipeline{
             echo "========pipeline execution failed========"
         }
     }
+}
