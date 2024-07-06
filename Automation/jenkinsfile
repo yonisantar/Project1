@@ -76,7 +76,7 @@ pipeline{
     post{
         always{
             sh 'rm -rf ${CODE_DIR}'
-            sh "docker rmi -f ${IMAGE_NAME}:${TAG}"
+          //  sh "docker rmi -f ${IMAGE_NAME}:${TAG}"
         }
         success{
             echo "========pipeline executed successfully ========"
