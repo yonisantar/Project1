@@ -6,11 +6,7 @@ pipeline{
                 sh 'pwd'
                 sh 'ls -la'
                 dir('api') {
-<<<<<<< HEAD
                     sh 'docker build -t api-app-image .'
-=======
-                    sh 'build -t api-app-image .'
->>>>>>> 7eb86dff80dffcf0113dadd3249beb9ac31ff34d
                 }
             }
             post{
