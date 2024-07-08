@@ -1,6 +1,9 @@
 pipeline{
     agent any
     environment {
+        SHARED_WORKSPACE = '/var/jenkins_home/workspace/Deploy Enviroment'
+    }    
+    environment {
         FOLDER_NAME= 'api'
         CONTAINER_NAME = 'api-app'
         EXTERNAL_APP_PORT = '5000'
@@ -16,7 +19,7 @@ pipeline{
      stages {
         stage("Terraform Init") {
             steps {
-                dir('Terraform') {
+                dir("${SHARED_WORKSPACE}/Terraorm") {
                     sh 'terraform init'
                 }
             }
@@ -29,7 +32,7 @@ pipeline{
                 }
             }
         }
-        stage("Terraform Plan") {
+        stage("Terraform Apply") {
             steps {
                 dir('Terraform') {
                     sh 'terraform plan'

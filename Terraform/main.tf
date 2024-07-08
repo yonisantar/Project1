@@ -9,6 +9,9 @@ resource "aws_instance" "apiServer" {
         sudo apt update
         sudo snap install docker
         sudo systemctl start docker
+        sudo apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common wget sudo git
+        sudo docker pull yit1977ltld/apiproject:latest
+        sudo docker run -d --name api -p 5000:5000 yit1977ltld/apiproject:latest
   EOF
 
   key_name               = "Devops"
@@ -16,8 +19,8 @@ resource "aws_instance" "apiServer" {
 }
 
 resource "aws_security_group" "ssh-sg" {
-  name        = "ssh-access"
-  description = "allow ssh access"
+  name        = "ssh-access + TCP (5000+80)"
+  description = "allow ssh and TCP access"
   ingress {
     from_port   = 22
     to_port     = 22
@@ -30,6 +33,12 @@ resource "aws_security_group" "ssh-sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+   ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }  
   egress {
     from_port   = 0
     to_port     = 0
