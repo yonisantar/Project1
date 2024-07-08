@@ -13,24 +13,34 @@ pipeline{
         DOCKERHUB_CREDENIALS = credentials('DockerCred')
 
     }    
-    stages{
-        stage("Terraform Init and Apply") {
+     stages {
+        stage("Terraform Init") {
             steps {
                 dir('Terraform') {
                     sh 'terraform init'
                 }
             }
-            steps {
-                dir('Terraform') {                    
-                    sh 'terraform plan'
-                }
-            }            
             post {
                 success {
-                    echo "Terraform applied successfully"
+                    echo "Terraform init successfully"
                 }
                 failure {
-                    echo "Terraform apply failed"
+                    echo "Terraform init failed"
+                }
+            }
+        }
+        stage("Terraform Plan") {
+            steps {
+                dir('Terraform') {
+                    sh 'terraform plan'
+                }
+            }
+            post {
+                success {
+                    echo "Terraform plan successfully"
+                }
+                failure {
+                    echo "Terraform plan failed"
                 }
             }
         }
