@@ -396,3 +396,27 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Existing Visual Studio gitignore content
+...
+
+# Terraform files
+# Ignore all .tfstate files
+Terraform/*.tfstate
+Terraform/*.tfstate.*
+
+# Ignore crash log files
+crash.log
+
+# Ignore Terraform provider overrides
+Terraform/override.tf
+Terraform/override.tf.json
+Terraform/*_override.tf
+Terraform/*_override.tf.json
+
+# Ignore CLI configuration files
+Terraform/.terraformrc
+Terraform/terraform.rc
+
+# Ignore module and plugin directories
+Terraform/.terraform/
