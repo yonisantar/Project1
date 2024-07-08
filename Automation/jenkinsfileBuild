@@ -3,7 +3,8 @@ pipeline{
         docker {
             image 'ubuntu:slim'
             args '-u root:root' 
-        }   
+        }
+    }  
      environment {
         FOLDER_NAME= 'api'
         CONTAINER_NAME = 'api-app'
