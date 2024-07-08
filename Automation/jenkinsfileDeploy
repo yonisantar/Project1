@@ -33,6 +33,7 @@ pipeline{
     }
    post{
         always{
+            echo "========pipeline Always ========"
         }
         success{
             echo "========pipeline executed successfully ========"
