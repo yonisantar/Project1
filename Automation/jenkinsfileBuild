@@ -1,4 +1,5 @@
 pipeline{
+    agent any
     environment {
         FOLDER_NAME= 'api'
         CONTAINER_NAME = 'api-app'
