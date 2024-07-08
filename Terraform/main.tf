@@ -11,16 +11,6 @@ resource "aws_instance" "apiServer" {
         sudo systemctl start docker
   EOF
 
-  provisioner "remote-exec" {
-    inline = ["sudo docker run -p 80:8080 -p 50000:50000 -d jenkins/jenkins" ]
-  }
-  connection {
-    type = "ssh"
-    host = self.public_ip
-    user = "ubuntu"
-    private_key = file("c:/Users/yonis/downloads/Devops.pem")
-  }
-
   key_name               = "Devops"
   vpc_security_group_ids = [aws_security_group.ssh-sg.id]
 }

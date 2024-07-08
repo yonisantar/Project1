@@ -420,3 +420,4 @@ Terraform/terraform.rc
 
 # Ignore module and plugin directories
 Terraform/.terraform/
+Terraform/terraform.lock*
