@@ -65,7 +65,7 @@ pipeline{
                 sh "docker tag ${IMAGE_NAME}:${TAG} ${ACCOUNT_NAME}:latest" // Tag the image as latest
                 sh "docker images"
                 sh "docker push ${ACCOUNT_NAME}:${TAG}" 
-                sh "docker push ${ACCOUNT_NAME}:${TAG}:latest" // Push the latest tag
+                sh "docker push ${ACCOUNT_NAME}:latest" // Push the latest tag
             }
         
         }
@@ -75,6 +75,7 @@ pipeline{
             sh 'rm -fr ${FOLDER_NAME}'
             sh "docker rmi -f ${IMAGE_NAME}:${TAG}"
             sh "docker rmi -f ${ACCOUNT_NAME}:${TAG}"
+            sh "docker rmi -f ${ACCOUNT_NAME}:latest" // Clean up the latest tag
             sh 'docker logout' 
         }
         success{
