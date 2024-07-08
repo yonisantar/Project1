@@ -19,7 +19,7 @@ pipeline{
                 sh 'pwd'
                 sh 'ls -la'
                 dir("${FOLDER_NAME}") {
-                    sh "docker build -t ${IMAGE_NAME}:${TAG} ."        
+                    sh "docker build -t ${IMAGE_NAME}:${TAG} ."     
                     sh "docker rm -f ${CONTAINER_NAME}"                
                 }
             }
@@ -62,8 +62,10 @@ pipeline{
          stage("push image"){
             steps{
                 sh "docker tag ${IMAGE_NAME}:${TAG} ${ACCOUNT_NAME}:${TAG}"
+                sh "docker tag ${IMAGE_NAME}:${TAG} ${ACCOUNT_NAME}:latest" // Tag the image as latest
                 sh "docker images"
                 sh "docker push ${ACCOUNT_NAME}:${TAG}" 
+                sh "docker push ${ACCOUNT_NAME}:latest" // Push the latest tag
             }
         
         }
