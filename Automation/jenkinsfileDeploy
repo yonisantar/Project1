@@ -18,9 +18,13 @@ pipeline{
             steps {
                 dir('Terraform') {
                     sh 'terraform init'
-                    sh 'terraform apply -auto-approve'
                 }
             }
+            steps {
+                dir('Terraform') {                    
+                    sh 'terraform plan'
+                }
+            }            
             post {
                 success {
                     echo "Terraform applied successfully"
