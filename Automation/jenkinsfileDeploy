@@ -29,14 +29,16 @@ pipeline{
                     echo "Terraform apply failed"
                 }
             }
+        }
     }
    post{
         always{
         }
         success{
+            echo "========pipeline executed successfully ========"
         }
         failure{
+            echo "========pipeline execution failed========"
         }
     }
-}
 }
