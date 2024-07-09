@@ -56,7 +56,7 @@ pipeline{
             }
             
         }
-        stage("SSH Connection") {
+        stage("SSH Connection and Install App") {
             steps {
                 script {                    
                     sshagent(credentials : ['devopsSSH']) {                        
