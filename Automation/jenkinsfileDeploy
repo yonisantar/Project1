@@ -57,40 +57,20 @@ pipeline{
             }
             
         }
-        stage('Update and Upgrade System') {
-            steps {
-                 retry(5) {
-                    script {
-                        try {
-                            sshagent(credentials: [CREDENTIALS_ID]) {
-                                sh """
-                                    ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo apt update && sudo apt upgrade -y'
-                                """
-                            }
-                        } catch (Exception e) {
-                            echo "Retrying after 10 seconds..."
-                            sleep 10
-                            throw e
-                        }
-                    }
-                }
-            }
-            post {
-                success {
-                    echo "Update and Upgrade successfully"
-                }
-                failure {
-                    echo "Update and Upgrade failed"
-                }
-            }            
-        }
-        stage('Install Docker if not installed') {
+        stage('Install Docker if not installed and Update/Upgrade system') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
-                   sh """
+                 sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} '
                         if ! command -v docker &> /dev/null; then
-                            sudo snap install docker && sudo systemctl start docker &&
+                            sudo apt-get update &&
+                            sudo apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common &&
+                            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &&
+                            sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" &&
+                            sudo apt-get update &&
+                            sudo apt-get install -y docker-ce &&
+                            sudo systemctl enable docker &&
+                            sudo systemctl start docker &&
                             until sudo docker info > /dev/null 2>&1; do
                                 sleep 5
                                 echo "Waiting for Docker to start..."
