@@ -6,9 +6,9 @@ pipeline{
         EXTERNAL_APP_PORT = '5000'
         INTERNAL_APP_PORT = '5000'
         CODE_DIR='movie-land'
-        IMAGE_NAME='api'
         TAG = 'v1.${BUILD_NUMBER}'
         ACCOUNT_NAME= 'yit1977ltld/apiproject'
+        IMAGE_NAME = '${ACCOUNT_NAME}:latest'
         REGISTRY= 'hub.docker.com'
         DOCKERHUB_CREDENIALS = credentials('DockerCred')
         SHARED_WORKSPACE = '/var/jenkins_home/workspace/Deploy Enviroment'
@@ -66,9 +66,8 @@ pipeline{
                             sudo snap install docker
                             sudo systemctl start docker
                             sudo apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common wget sudo git
-                            sudo docker pull ${ACCOUNT_NAME}:latest
-                            sudo docker run -d --name ${IMAGE_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${ACCOUNT_NAME}:latest                            ls
-                            '
+                            sudo docker pull ${IMAGE_NAME}
+                            sudo docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}                                                       
                         """
                     }
                 }
