@@ -79,9 +79,18 @@ pipeline{
                         sh """
                             ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common wget sudo git'
                         """
-                        // Step 4: Deploy Application
+                        // Step 4: Try to Remove Old Container
                         sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo docker rm -f ${CONTAINER_NAME} && sudo docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}'
+                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} '
+                            if sudo docker ps -a --format "{{.Names}}" | grep -Eq "^${CONTAINER_NAME}\$"; then
+                                sudo docker rm -f ${CONTAINER_NAME}
+                            else
+                                echo "Container ${CONTAINER_NAME} does not exist."
+                            fi'
+                        """
+                        // Step 5: Run Docker Container
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}'
                         """
                     }
                     }
