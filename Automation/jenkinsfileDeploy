@@ -60,16 +60,24 @@ pipeline{
             steps {
                 script {                    
                     sshagent(credentials : ['devopsSSH']) {                        
+                    script {
+                        // Step 1: Update and Upgrade System
                         sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} <<EOF
-                                sudo apt update && sudo apt upgrade -y &&
-                                sudo snap install docker &&
-                                sudo systemctl start docker &&
-                                sudo apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common wget sudo git &&
-                                sudo docker rm -f ${CONTAINER_NAME} &&
-                                sudo docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}
-                            EOF
+                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo apt update && sudo apt upgrade -y'
                         """
+                        // Step 2: Install Docker
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo snap install docker && sudo systemctl start docker'
+                        """
+                        // Step 3: Install Dependencies
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common wget sudo git'
+                        """
+                        // Step 4: Deploy Application
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo docker rm -f ${CONTAINER_NAME} && sudo docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}'
+                        """
+                    }
                     }
                 }
             }
