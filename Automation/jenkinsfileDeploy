@@ -74,29 +74,49 @@ pipeline{
                 }
             }            
         }
-        stage('Install Docker if not running') {
+        stage('Install Docker if not installed') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} '
                         if ! command -v docker &> /dev/null; then
-                            sudo snap install docker &&
-                            sudo systemctl start docker
+                            sudo snap install docker
                         else
-                            echo "Docker is already installed and running."
+                            echo "Docker is already installed."
                         fi'
                     """
                 }
             }
             post {
                 success {
-                    echo "install Docker successfully"
+                    echo "Install Docker successfully"
                 }
                 failure {
-                    echo "install Docker failed"
+                    echo "Install Docker failed"
                 }
             } 
-            
+        }
+        stage('Start Docker Service if not running') {
+            steps {
+                sshagent(credentials: [CREDENTIALS_ID]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} '
+                        if ! sudo systemctl is-active --quiet docker; then
+                            sudo systemctl start docker
+                        else
+                            echo "Docker service is already running."
+                        fi'
+                    """
+                }
+            }
+            post {
+                success {
+                    echo "Start Docker service successfully"
+                }
+                failure {
+                    echo "Start Docker service failed"
+                }
+            } 
         }
         stage('Install Dependencies') {
             steps {
@@ -158,8 +178,15 @@ pipeline{
         
     }
     post{
-        always{
+         always {
             echo "========pipeline Always ========"
+            script {
+                if (env.PUBLIC_IP) {
+                    echo "Server PUBLIC_IP is : ${PUBLIC_IP}"
+                } else {
+                    echo "PUBLIC_IP is empty"
+                }
+            }
         }
         success{
             echo "========pipeline executed successfully ========"
