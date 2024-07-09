@@ -34,7 +34,15 @@ pipeline{
                 dir("${SHARED_WORKSPACE}/Terraform") {
                     sh 'pwd'
                     sh 'ls'
-                    sh 'terraform plan'
+                    script {
+                        def terraformPlanOutput = sh(script: 'terraform apply -auto-approve', returnStdout: true).trim()
+                        def publicIpMatch = terraformPlanOutput =~ /public_ip\s*=\s*"([0-9\.]+)"/
+                        if (publicIpMatch) {
+                            env.PUBLIC_IP = publicIpMatch[0][1]
+                            echo "Extracted PUBLIC_IP: ${env.PUBLIC_IP}"
+                        } else {
+                            error("Failed to extract public_ip from terraform plan output")
+                        }
                 }
             }
             post {
@@ -43,6 +51,25 @@ pipeline{
                 }
                 failure {
                     echo "Terraform plan failed"
+                }
+            }
+        }
+        stage("SSH Connection") {
+            steps {
+                script {
+                    sshagent(['devopsSSH']) {
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} echo "Connected to server"'
+                        sh 'pwd'
+                        sh 'ls'
+                    }
+                }
+            }
+            post {
+                success {
+                    echo "SSH connection successfully established"
+                }
+                failure {
+                    echo "SSH connection failed"
                 }
             }
         }
