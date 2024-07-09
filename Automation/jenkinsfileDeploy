@@ -16,7 +16,7 @@ pipeline{
      stages {
         stage("Terraform Init") {
             steps {
-                dir("${SHARED_WORKSPACE}/Terraorm") {
+                dir("${SHARED_WORKSPACE}/Terraform") {
                     sh 'terraform init'
                 }
             }
@@ -31,8 +31,9 @@ pipeline{
         }
         stage("Terraform Plan") {
             steps {
-                dir("${SHARED_WORKSPACE}/Terraorm") {
+                dir("${SHARED_WORKSPACE}/Terraform") {
                     sh 'pwd'
+                    sh 'ls'
                     sh 'terraform plan'
                 }
             }
