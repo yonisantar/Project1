@@ -29,7 +29,7 @@ pipeline{
                 }
             }
         }
-        stage("Terraform Plan") {
+        stage("Terraform Apply") {
             steps {
                 dir("${SHARED_WORKSPACE}/Terraform") {
                     sh 'pwd'
@@ -47,11 +47,12 @@ pipeline{
             }
             post {
                 success {
-                    echo "Terraform plan successfully"
+                    echo "Terraform Apply successfully"
                 }
                 failure {
-                    echo "Terraform plan failed"
+                    echo "Terraform Apply failed"
                 }
+            }
             }
         }
         stage("SSH Connection") {
@@ -73,6 +74,7 @@ pipeline{
                 }
             }
         }
+        
     }
    post{
         always{
