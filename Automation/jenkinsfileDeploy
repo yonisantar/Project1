@@ -108,16 +108,27 @@ pipeline{
         }
         stage('Start Docker Service if not running') {
             steps {
-                sshagent(credentials: [CREDENTIALS_ID]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} '
-                        if ! sudo systemctl is-active --quiet docker; then
-                            sudo systemctl start docker
-                        else
-                            echo "Docker service is already running."
-                        fi'
-                    """
+                 retry(5) {
+                    script {
+                        try {
+                            sshagent(credentials: [CREDENTIALS_ID]) {
+                            sh """
+                                ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} '
+                                if ! sudo systemctl is-active --quiet docker; then
+                                    sudo systemctl start docker
+                                else
+                                    echo "Docker service is already running."
+                                fi'
+                            """
+                            }
+                        } catch (Exception e) {
+                            echo "Retrying after 10 seconds..."
+                            sleep 10
+                            throw e
+                        }
+                    }
                 }
+
             }
             post {
                 success {
