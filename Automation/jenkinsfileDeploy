@@ -60,7 +60,7 @@ pipeline{
             steps {
                 script {                    
                     sshagent(credentials : ['devopsSSH']) {                        
-                        //sh "ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} "
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} "
                         sh 'pwd'
                         sh 'ls'
                     }
