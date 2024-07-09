@@ -60,10 +60,13 @@ pipeline{
             steps {
                 script {                    
                     sshagent(credentials : ['devopsSSH']) {                        
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 
-                        'sudo apt update && sudo apt upgrade -y'"
-                        sh 'pwd'
-                        sh 'ls'
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} '
+                            sudo apt update && sudo apt upgrade -y &&
+                            pwd &&
+                            ls
+                            '
+                        """
                     }
                 }
             }
