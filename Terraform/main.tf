@@ -6,12 +6,6 @@ resource "aws_instance" "apiServer" {
   }
   user_data              = <<-EOF
         #!/bin/bash
-        sudo apt update
-        sudo snap install docker
-        sudo systemctl start docker
-        sudo apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common wget sudo git
-        sudo docker pull yit1977ltld/apiproject:latest
-        sudo docker run -d --name api -p 5000:5000 yit1977ltld/apiproject:latest
   EOF
 
   key_name               = "Devops"
