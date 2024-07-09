@@ -29,9 +29,10 @@ pipeline{
                 }
             }
         }
-        stage("Terraform Apply") {
+        stage("Terraform Plan") {
             steps {
-                dir('Terraform') {
+                dir("${SHARED_WORKSPACE}/Terraorm") {
+                    sh 'PWD'
                     sh 'terraform plan'
                 }
             }
