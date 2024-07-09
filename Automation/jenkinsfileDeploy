@@ -110,8 +110,7 @@ pipeline{
                 }
             } 
         }
- 
-        }
+        
         stage('Install Dependencies') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
