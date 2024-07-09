@@ -1,9 +1,6 @@
 pipeline{
     agent any
     environment {
-        SHARED_WORKSPACE = '/var/jenkins_home/workspace/Deploy Enviroment'
-    }    
-    environment {
         FOLDER_NAME= 'api'
         CONTAINER_NAME = 'api-app'
         EXTERNAL_APP_PORT = '5000'
@@ -14,7 +11,7 @@ pipeline{
         ACCOUNT_NAME= 'yit1977ltld/apiproject'
         REGISTRY= 'hub.docker.com'
         DOCKERHUB_CREDENIALS = credentials('DockerCred')
-
+        SHARED_WORKSPACE = '/var/jenkins_home/workspace/Deploy Enviroment'
     }    
      stages {
         stage("Terraform Init") {
