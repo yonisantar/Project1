@@ -1,6 +1,7 @@
 pipeline{
     agent any
     environment {
+        TERRAFORM_FOLDER_NAME= 'Terraform'
         FOLDER_NAME= 'api'
         CONTAINER_NAME = 'api-app'
         EXTERNAL_APP_PORT = '5000'
@@ -18,7 +19,7 @@ pipeline{
      stages {
         stage("Terraform Init") {
             steps {
-                dir("${SHARED_WORKSPACE}/Terraform") {
+                dir("${SHARED_WORKSPACE}/${TERRAFORM_FOLDER_NAME}") {
                     echo "======== Start Terraform Init ========"
                     sh 'terraform init'
                 }
@@ -34,7 +35,7 @@ pipeline{
         }
         stage("Terraform Apply") {
             steps {
-                dir("${SHARED_WORKSPACE}/Terraform") {
+                dir("${SHARED_WORKSPACE}/${TERRAFORM_FOLDER_NAME}") {
                     sh 'pwd'
                     sh 'ls'
                     echo "======== Start Terraform Apply to Generate Env ========"
