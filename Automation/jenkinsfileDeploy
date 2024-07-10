@@ -47,7 +47,6 @@ pipeline{
                         } else {
                             error("Failed to extract public_ip from terraform plan output")
                         }
-                        sleep 15
                     }
                 }
             }
@@ -64,6 +63,7 @@ pipeline{
         stage('Update System') {
             steps {
                 script {
+                    sleep 15
                     retry(5) {
                         sshagent(credentials: [CREDENTIALS_ID]) {
                             echo "======== Start Update System ========"
