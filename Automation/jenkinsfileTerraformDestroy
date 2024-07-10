@@ -9,7 +9,7 @@ pipeline{
             steps {
                 dir("${SHARED_WORKSPACE}/${TERRAFORM_FOLDER_NAME}") {
                     echo "======== Destroy Enviroment ========"
-                    sh 'terraform destroy'
+                    sh 'terraform destroy -auto-approve'
                 }
             }
             post {
