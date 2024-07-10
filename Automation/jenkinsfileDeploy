@@ -13,7 +13,7 @@ pipeline{
         DOCKERHUB_CREDENIALS = credentials('DockerCred')
         SHARED_WORKSPACE = '/var/jenkins_home/workspace/Deploy Enviroment'
         CREDENTIALS_ID = 'devopsSSH'
-        USER-NAME = 'ubuntu'
+        USER_NAME = 'ubuntu'
     }    
      stages {
         stage("Terraform Init") {
