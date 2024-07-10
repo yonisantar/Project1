@@ -15,6 +15,8 @@ pipeline{
         SHARED_WORKSPACE = '/var/jenkins_home/workspace/Deploy Enviroment'
         CREDENTIALS_ID = 'devopsSSH'
         USER_NAME = 'ubuntu'
+        JSON_TEST_REQUEST = '{"ip": "8.8.8.8"}'
+        OK_STATUS_CODE = '200'
     }    
      stages {
         stage("Terraform Init") {
@@ -212,8 +214,33 @@ pipeline{
                 }
             }              
         }
-
-        
+        stage('Check container by running traceroute request') {
+            steps {
+                sshagent(credentials: [CREDENTIALS_ID]) {
+                    echo "======== Check Container by running traceroute request ========"
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
+                        response=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://${PUBLIC_IP}:${EXTERNAL_APP_PORT} -H "Content-Type: application/json" -d ${JSON_TEST_REQUEST})
+                        if [ "\$response" -eq ${OK_STATUS_CODE} ]; then
+                            echo "traceroute request is working correctly."
+                        else
+                            echo "traceroute request is not working correctly. HTTP status code: \$response"
+                            exit 1
+                        fi
+                        exit
+                        EOF
+                    """
+                }
+            }
+            post {
+                success {
+                    echo "Container is working correctly"
+                }
+                failure {
+                    echo "Container is not working correctly"
+                }
+            }
+        }
     }
     post{
          always {
