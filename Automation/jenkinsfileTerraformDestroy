@@ -2,6 +2,7 @@ pipeline{
     agent any
     environment {
         TERRAFORM_FOLDER_NAME= 'Terraform'
+        SHARED_WORKSPACE = '/var/jenkins_home/workspace/Deploy Enviroment'
     }    
      stages {
         stage("Terraform Destroy") {
