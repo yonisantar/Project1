@@ -16,7 +16,7 @@ pipeline{
         CREDENTIALS_ID = 'devopsSSH'
         USER_NAME = 'ubuntu'
         JSON_TEST_REQUEST = '{"ip": "8.8.8.8"}'
-        OK_STATUS_CODE = '200'
+        OK_STATUS_CODE = 200
         URL_TRACERT = 'traceroute'
         URL_VALIDATE_IP = 'validate_ip'
     }    
@@ -246,11 +246,11 @@ pipeline{
                     
                     echo response
                     
-                    //if (response == ${OK_STATUS_CODE}) {
-                   //     echo "Container is working correctly."
-                  //  } else {
-                  //      error "Container is not working correctly. HTTP status code: ${response}"
-                 //   }
+                    if (response == ${OK_STATUS_CODE}) {
+                        echo "Container is working correctly."
+                    } else {
+                        error "Container is not working correctly. HTTP status code: ${response}"
+                    }
                 }
             }            
             post {
