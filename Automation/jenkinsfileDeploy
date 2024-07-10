@@ -58,7 +58,6 @@ pipeline{
             }
             
         }
-        stages {
             stage('Update System') {
                 steps {
                     sshagent(credentials: [CREDENTIALS_ID]) {
@@ -89,7 +88,7 @@ pipeline{
                         echo "Install Docker failed"
                     }
                 }
-        }
+        
         stage('Install Docker if not installed') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
