@@ -242,11 +242,11 @@ pipeline{
                 script {
                     def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" -X POST http://${PUBLIC_IP}:${EXTERNAL_APP_PORT}/${URL_TRACERT} -H \"Content-Type: application/json\" -d '${JSON_TEST_REQUEST}'", returnStdout: true).trim()
                     
-                if [ "$response" -eq "${OK_STATUS_CODE}" ]; then
-                    echo "Container is working correctly."
-                else
-                    echo "Container is not working correctly. HTTP status code: ${response}"
-                fi
+                    if (response == "${OK_STATUS_CODE}") {
+                        echo "Container is working correctly."
+                    } else {
+                        echo "Container is not working correctly. HTTP status code: ${response}"
+                    }
                 }
             }            
             post {
