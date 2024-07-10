@@ -65,7 +65,7 @@ pipeline{
         }
         stage('Check if EC2 is Up and running') {
             steps{
-                retry(3){
+                retry(50){
                     timeout(time: 1, unit: 'SECONDS'){
                         sh "ping -c 1 ${PUBLIC_IP}"
                     }
