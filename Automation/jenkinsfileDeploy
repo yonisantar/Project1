@@ -201,7 +201,7 @@ pipeline{
                 sshagent(credentials: [CREDENTIALS_ID]) {
                     echo "======== Update App Container with the new Version ========"
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}'
+                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} 'sudo docker run -d --name ${CONTAINER_NAME} -p ${EXTERNAL_APP_PORT}:${INTERNAL_APP_PORT} ${IMAGE_NAME}'
                     """
                 }
             }
