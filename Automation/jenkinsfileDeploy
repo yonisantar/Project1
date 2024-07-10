@@ -19,7 +19,7 @@ pipeline{
         stage("Terraform Init") {
             steps {
                 dir("${SHARED_WORKSPACE}/Terraform") {
-                    echo "========Start Terraform Init ========"
+                    echo "======== Start Terraform Init ========"
                     sh 'terraform init'
                 }
             }
@@ -37,7 +37,7 @@ pipeline{
                 dir("${SHARED_WORKSPACE}/Terraform") {
                     sh 'pwd'
                     sh 'ls'
-                    echo "========Start Terraform Apply to Generate Env ========"
+                    echo "======== Start Terraform Apply to Generate Env ========"
                     script {
                         def terraformPlanOutput = sh(script: 'terraform apply -auto-approve', returnStdout: true).trim()
                         def publicIpMatch = terraformPlanOutput =~ /public_ip\s*=\s*"([0-9\.]+)"/
