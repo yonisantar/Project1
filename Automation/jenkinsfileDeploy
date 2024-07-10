@@ -61,15 +61,15 @@ pipeline{
         stage('Install Docker if not installed and Update/Upgrade system') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=${USER_NAME}@${PUBLIC_IP} <<EOF
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
                         echo "Connected successfully"
                         sudo apt update
                         sudo snap install docker
                         sudo systemctl start docker
                         exit
                         EOF
-                    '''
+                    """
                 }
             }
             post {
@@ -86,7 +86,7 @@ pipeline{
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} 'sudo apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common wget sudo git'
+                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} 'sudo apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common wget sudo git'
                     """
                 }
             }
@@ -103,7 +103,7 @@ pipeline{
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} '
+                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} '
                         if sudo docker ps -a --format "{{.Names}}" | grep -Eq "^${CONTAINER_NAME}\$"; then
                             sudo docker rm -f ${CONTAINER_NAME}
                         else
