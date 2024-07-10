@@ -13,6 +13,7 @@ pipeline{
         DOCKERHUB_CREDENIALS = credentials('DockerCred')
         SHARED_WORKSPACE = '/var/jenkins_home/workspace/Deploy Enviroment'
         CREDENTIALS_ID = 'devopsSSH'
+        USER-NAME = 'ubuntu'
     }    
      stages {
         stage("Terraform Init") {
@@ -60,10 +61,15 @@ pipeline{
         stage('Install Docker if not installed and Update/Upgrade system') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
-                    sh 'pwd'
-                    sh 'sudo apt update'
-                    sh 'sudo snap install docker'
-                    sh 'sudo systemctl start docker'
+                    sh '''
+                        ssh -o StrictHostKeyChecking=${USER_NAME}@${PUBLIC_IP} <<EOF
+                        echo "Connected successfully"
+                        sudo apt update
+                        sudo snap install docker
+                        sudo systemctl start docker
+                        exit
+                        EOF
+                    '''
                 }
             }
             post {
