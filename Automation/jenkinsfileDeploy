@@ -63,7 +63,7 @@ pipeline{
         stage('Update System') {
             steps {
                 script {
-                    sleep 15
+                    sleep 30
                     retry(5) {
                         sshagent(credentials: [CREDENTIALS_ID]) {
                             echo "======== Start Update System ========"
