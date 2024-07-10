@@ -58,28 +58,37 @@ pipeline{
             }
             
         }
-    stages {
-        stage('Update System') {
-            steps {
-                sshagent(credentials: [CREDENTIALS_ID]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
-                        echo "Connected successfully"
-                        pwd
-                        sudo apt-get update && sudo apt-get upgrade -y
-                        exit
-                        EOF
-                    """
+        stages {
+            stage('Update System') {
+                steps {
+                    sshagent(credentials: [CREDENTIALS_ID]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
+                            echo "Connected successfully"
+                            pwd
+                            sudo apt-get update && sudo apt-get upgrade -y
+                            exit
+                            EOF
+                        """
+                    }
+                }
+                post {
+                    success {
+                        echo "System updated successfully"
+                    }
+                    failure {
+                        echo "System update failed"
+                    }
                 }
             }
-            post {
-                success {
-                    echo "System updated successfully"
+                        post {
+                    success {
+                        echo "Install Docker successfully"
+                    }
+                    failure {
+                        echo "Install Docker failed"
+                    }
                 }
-                failure {
-                    echo "System update failed"
-                }
-            }
         }
         stage('Install Docker if not installed') {
             steps {
