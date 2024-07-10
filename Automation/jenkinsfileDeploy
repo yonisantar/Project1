@@ -66,7 +66,7 @@ pipeline{
                         ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
                         echo "Connected successfully"
                         pwd
-                        sudo apt-get update && sudo apt upgrade -y
+                        sudo apt-get update && sudo apt-get upgrade -y
                         exit
                         EOF
                     """
