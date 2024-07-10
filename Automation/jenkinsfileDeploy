@@ -114,7 +114,44 @@ pipeline{
                 }
             }
         }
-        
+        stage('Check if Docker is running') {
+            steps {
+                sshagent(credentials: [CREDENTIALS_ID]) {
+                    echo "======== Check if Docker is Running ========"
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
+                        if sudo systemctl is-active --quiet docker; then
+                            echo "Docker service is running."
+                        else
+                            echo "Docker service is not running. Starting Docker service..."
+                            sudo systemctl start docker
+                            if sudo systemctl is-active --quiet docker; then
+                                echo "Docker service started successfully."
+                            else
+                                echo "Failed to start Docker service."
+                            fi
+                        fi
+
+                        # Verify Docker is working
+                        if docker info > /dev/null 2>&1; then
+                            echo "Docker is running correctly."
+                        else
+                            echo "Docker is not running correctly."
+                        fi
+                        exit
+                        EOF
+                    """
+                }
+            }
+            post {
+                success {
+                    echo "Docker is running correctly"
+                }
+                failure {
+                    echo "Docker is not running correctly"
+                }
+            }
+        }
         stage('Install Dependencies') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
