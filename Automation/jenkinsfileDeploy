@@ -219,7 +219,7 @@ pipeline{
                 sshagent(credentials: [CREDENTIALS_ID]) {
                     echo "======== Check Container by running traceroute request ========"
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
+                        <<EOF
                         response=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://${PUBLIC_IP}:${EXTERNAL_APP_PORT} -H "Content-Type: application/json" -d ${JSON_TEST_REQUEST})
                         if [ "\$response" -eq ${OK_STATUS_CODE} ]; then
                             echo "traceroute request is working correctly."
