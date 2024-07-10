@@ -63,10 +63,35 @@ pipeline{
             }
             
         }
+        stage('Check if EC2 is Up and running') {
+            steps {
+                script {
+                    echo "======== Check if EC2 Up and running ========"
+                    retry(10) { // Retry up to 10 times
+                        sleep(30) // Wait 30 seconds between retries
+                        sshagent(credentials: [CREDENTIALS_ID]) {
+                            sh """
+                                ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 ${USER_NAME}@${PUBLIC_IP} <<EOF
+                                echo "EC2 instance is up and running."
+                                exit
+                                EOF
+                            """
+                        }
+                    }
+                }
+            }
+            post {
+                success {
+                    echo "EC2 instance Up and running"
+                }
+                failure {
+                    echo "Failed to connect to EC2 instance"
+                }
+            }
+        }
         stage('Update System') {
             steps {
                 script {
-                    sleep 30
                     retry(5) {
                         sshagent(credentials: [CREDENTIALS_ID]) {
                             echo "======== Start Update System ========"
@@ -218,7 +243,7 @@ pipeline{
             steps {
                  echo "======== Check Container by running traceroute request ========"
                 script {
-                    def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" -X POST http://${PUBLIC_IP}:${EXTERNAL_APP_PORT} -H \"Content-Type: application/json\" -d ${JSON_TEST_REQUEST}'", returnStdout: true).trim()
+                    def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" -X POST http://${PUBLIC_IP}:${EXTERNAL_APP_PORT} -H \"Content-Type: application/json\" -d ${JSON_TEST_REQUEST}", returnStdout: true).trim()
                     if (response == ${OK_STATUS_CODE}) {
                         echo "Container is working correctly."
                     } else {
