@@ -58,15 +58,41 @@ pipeline{
             }
             
         }
-        stage('Install Docker if not installed and Update/Upgrade system') {
+    stages {
+        stage('Update System') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
                         echo "Connected successfully"
-                        sudo apt update
-                        sudo snap install docker
-                        sudo systemctl start docker
+                        pwd
+                        sudo apt update && sudo apt upgrade -y
+                        exit
+                        EOF
+                    """
+                }
+            }
+            post {
+                success {
+                    echo "System updated successfully"
+                }
+                failure {
+                    echo "System update failed"
+                }
+            }
+        }
+        stage('Install Docker if not installed') {
+            steps {
+                sshagent(credentials: [CREDENTIALS_ID]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${USER_NAME}@${PUBLIC_IP} <<EOF
+                        pwd
+                        if ! command -v docker &> /dev/null; then
+                            sudo snap install docker &&
+                            sudo systemctl start docker
+                        else
+                            echo "Docker is already installed."
+                        fi
                         exit
                         EOF
                     """
@@ -79,7 +105,7 @@ pipeline{
                 failure {
                     echo "Install Docker failed"
                 }
-            } 
+            }
         }
         
         stage('Install Dependencies') {
