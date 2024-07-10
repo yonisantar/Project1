@@ -60,6 +60,7 @@ pipeline{
         stage('Install Docker if not installed and Update/Upgrade system') {
             steps {
                 sshagent(credentials: [CREDENTIALS_ID]) {
+                    sh 'pwd'
                     sh 'sudo apt update'
                     sh 'sudo snap install docker'
                     sh 'sudo systemctl start docker'
