@@ -68,7 +68,6 @@ pipeline{
                 script {
                     echo "======== Check if EC2 Up and running ========"
                     retry(10) { // Retry up to 10 times
-                        sleep(30) // Wait 30 seconds between retries
                         sshagent(credentials: [CREDENTIALS_ID]) {
                             sh """
                                 ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 ${USER_NAME}@${PUBLIC_IP} <<EOF
@@ -77,6 +76,7 @@ pipeline{
                                 EOF
                             """
                         }
+                    sleep(5) // Wait 5 seconds between retries
                     }
                 }
             }
