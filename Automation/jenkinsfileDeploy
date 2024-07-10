@@ -236,19 +236,37 @@ pipeline{
                 }
             }              
         }
-        stage('Check container by running traceroute request') {
-            steps {
-                 echo "======== Check Container by running traceroute request ========"
-                script {
-                    def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" -X POST http://${PUBLIC_IP}:${EXTERNAL_APP_PORT}/${URL_TRACERT} -H \"Content-Type: application/json\" -d '${JSON_TEST_REQUEST}'", returnStdout: true).trim()
-                    
-                    if (response == "${OK_STATUS_CODE}") {
-                        echo "Container is working correctly."
-                    } else {
-                        echo "Container is not working correctly. HTTP status code: ${response}"
+        stage('Check container by running two curl requests') {
+            parallel {
+                stage('Check tracert request') {
+                    steps {
+                        echo "======== Check Container by running traceroute request ========"
+                        script {
+                            def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" -X POST http://${PUBLIC_IP}:${EXTERNAL_APP_PORT}/${URL_TRACERT} -H \"Content-Type: application/json\" -d '${JSON_TEST_REQUEST}'", returnStdout: true).trim()
+                            
+                            if (response == "${OK_STATUS_CODE}") {
+                                echo "TraceRt is working correctly."
+                            } else {
+                                echo "TraceRt is not working correctly. HTTP status code: ${response}"
+                            }
+                        }
                     }
                 }
-            }            
+                stage('Check ValidateIp request') {
+                    steps {
+                        echo "======== Check Container by running ValidateIp request ========"
+                        script {
+                            def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" -X POST http://${PUBLIC_IP}:${EXTERNAL_APP_PORT}/${URL_VALIDATE_IP} -H \"Content-Type: application/json\" -d '${JSON_TEST_REQUEST}'", returnStdout: true).trim()
+                            
+                            if (response == "${OK_STATUS_CODE}") {
+                                echo "ValidateIp is working correctly."
+                            } else {
+                                echo "ValidateIp  is not working correctly. HTTP status code: ${response}"
+                            }
+                        }
+                    }
+                }
+            }
             post {
                 success {
                     echo "Container is working correctly"
