@@ -64,19 +64,10 @@ pipeline{
             
         }
         stage('Check if EC2 is Up and running') {
-            steps {
-                script {
-                    echo "======== Check if EC2 Up and running ========"
-                    retry(10) { // Retry up to 10 times
-                        sshagent(credentials: [CREDENTIALS_ID]) {
-                            sh """
-                                ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 ${USER_NAME}@${PUBLIC_IP} <<EOF
-                                echo "EC2 instance is up and running."
-                                exit
-                                EOF
-                            """
-                        }
-                    sleep(5) // Wait 5 seconds between retries
+            steps{
+                retry(3){
+                    timeout(time: 1, unit: 'SECONDS'){
+                        sh "ping -c 1 ${PUBLIC_IP}"
                     }
                 }
             }
