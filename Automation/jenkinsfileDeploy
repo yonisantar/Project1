@@ -6,7 +6,6 @@ pipeline{
         CONTAINER_NAME = 'api-app'
         EXTERNAL_APP_PORT = '5000'
         INTERNAL_APP_PORT = '5000'
-        CODE_DIR='movie-land'
         TAG = 'v1.${BUILD_NUMBER}'
         ACCOUNT_NAME= 'yit1977ltld/apiproject'
         IMAGE_NAME = "${ACCOUNT_NAME}:latest"
